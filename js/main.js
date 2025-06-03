@@ -1099,15 +1099,41 @@ function initializeModal() {
   
   // Add event listener to close button
   modalClose.addEventListener('click', () => {
-    trainingModal.classList.remove('show');
+    window.closeTrainingModal();
   });
   
   // Close modal when clicking outside of content
   trainingModal.addEventListener('click', (e) => {
     if (e.target === trainingModal) {
-      trainingModal.classList.remove('show');
+      window.closeTrainingModal();
     }
   });
+  
+  // Add keyboard support for closing (Escape key)
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && trainingModal.classList.contains('show')) {
+      window.closeTrainingModal();
+    }
+  });
+  
+  // Fix for iOS scrolling issues - prevent body scrolling when modal is open
+  window.blockBodyScroll = function(block) {
+    if (block) {
+      document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.width = '100%';
+    } else {
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
+    }
+  };
+  
+  // Close modal function
+  window.closeTrainingModal = function() {
+    trainingModal.classList.remove('show');
+    window.blockBodyScroll(false);
+  };
   
   // Add event listeners to all training cells
   document.addEventListener('click', (e) => {
@@ -1173,6 +1199,11 @@ function showTrainingDetails(trainingCell) {
   // Show modal
   const trainingModal = document.getElementById('trainingModal');
   trainingModal.classList.add('show');
+  
+  // Block body scroll when modal is open
+  if (typeof window.blockBodyScroll === 'function') {
+    window.blockBodyScroll(true);
+  }
 }
 
 // Get training type label

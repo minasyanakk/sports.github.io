@@ -1105,6 +1105,8 @@ p {
   overflow: hidden;
   transform: scale(0.9);
   transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
 }
 
 .modal.show .modal-content {
@@ -1143,6 +1145,7 @@ p {
   padding: var(--spacing-6);
   overflow-y: auto;
   max-height: calc(90vh - 80px);
+  -webkit-overflow-scrolling: touch; /* Плавная прокрутка на iOS */
 }
 
 .modal-training-details {
@@ -1234,6 +1237,30 @@ p {
 @media (max-width: 768px) {
   .hero-title {
     font-size: var(--font-size-3xl);
+  }
+  
+  /* Улучшения для модального окна на мобильных устройствах */
+  .modal-content {
+    width: 95%;
+    max-height: 80vh;
+    margin-bottom: 20px; /* Добавляем отступ снизу */
+  }
+  
+  .modal-body {
+    padding: var(--spacing-4);
+    max-height: calc(80vh - 70px);
+  }
+  
+  .modal-header {
+    padding: var(--spacing-3) var(--spacing-4);
+  }
+  
+  .modal-training-info {
+    font-size: 0.95em;
+  }
+  
+  .training-instructions {
+    padding: var(--spacing-2);
   }
 
   .hero-subtitle {
