@@ -13,11 +13,138 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeCharts();
     initializeTabSwitching();
     initializeModal();
+    
+    // Display today's training
+    displayCurrentDateAndTraining();
   }, 1500);
   
   // Initialize event listeners
   initializeEventListeners();
 });
+
+// Display current date and training
+function displayCurrentDateAndTraining(testDate) {
+  // Get current date elements
+  const currentDateElement = document.getElementById('currentDate');
+  const todayTrainingContainer = document.getElementById('todayTraining');
+  
+  // Get current date (or use test date for development)
+  const realToday = testDate || new Date();
+  
+  // For development/testing - use a mock date inside the training program
+  // This makes the current training visible even before the program starts
+  // In production, comment this out and use the line above
+  const today = new Date(2025, 5, 15, 12, 0, 0); // June 15, 2025 (week 1, day 7)
+  
+  // Display real current date
+  const realFormattedDate = realToday.toLocaleDateString('uk-UA', { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  });
+  
+  // Format current date for display
+  const options = { 
+    weekday: 'long', 
+    year: 'numeric', 
+    month: 'long', 
+    day: 'numeric' 
+  };
+  const formattedDate = today.toLocaleDateString('uk-UA', options);
+  
+  // Show real date and training date (if in demo mode)
+  if (today.getTime() !== realToday.getTime()) {
+    currentDateElement.innerHTML = `
+      <div class="real-date">${realFormattedDate}</div>
+      <div class="demo-date">Демонстрація тренування на: ${formattedDate}</div>
+    `;
+  } else {
+    currentDateElement.textContent = formattedDate;
+  }
+  
+  // Calculate program start date
+  const programStartDate = new Date(2025, 5, 9, 12, 0, 0); // June 9, 2025 (months are 0-indexed)
+  
+  // Check if today is before the program start
+  if (today < programStartDate) {
+    todayTrainingContainer.innerHTML = `
+      <div class="no-training">
+        <h3>Програма тренувань ще не почалася</h3>
+        <p>Тренування почнуться з ${programStartDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Calculate days since program start
+  const daysDiff = Math.floor((today - programStartDate) / (1000 * 60 * 60 * 24));
+  
+  // Check if we're past the program
+  if (daysDiff >= 7 * trainingPlan.length) {
+    todayTrainingContainer.innerHTML = `
+      <div class="no-training">
+        <h3>Програма тренувань завершена</h3>
+        <p>Вітаємо! Ви успішно завершили 12-тижневу програму підготовки до півмарафону.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  // Calculate current week and day
+  const currentWeekIndex = Math.floor(daysDiff / 7);
+  const currentDayIndex = daysDiff % 7;
+  
+  // Get current training info
+  const currentWeek = trainingPlan[currentWeekIndex];
+  const currentDay = currentWeek.days[currentDayIndex];
+  
+  // Get background color based on training type
+  let backgroundColor, borderColor;
+  switch (currentDay.type) {
+    case 'run':
+      backgroundColor = 'rgba(59, 130, 246, 0.1)';
+      borderColor = 'var(--color-run)';
+      break;
+    case 'strength':
+      backgroundColor = 'rgba(245, 158, 11, 0.1)';
+      borderColor = 'var(--color-strength)';
+      break;
+    case 'bike':
+      backgroundColor = 'rgba(16, 185, 129, 0.1)';
+      borderColor = 'var(--color-bike)';
+      break;
+    case 'rest':
+      backgroundColor = 'rgba(107, 114, 128, 0.1)';
+      borderColor = 'var(--color-rest)';
+      break;
+  }
+  
+  // Get nutrition plan
+  const nutritionPlan = getNutritionPlan(currentDay.type, currentDay.intensity, currentWeek.phase);
+  
+  // Display current training
+  todayTrainingContainer.innerHTML = `
+    <div class="today-training-card" style="background-color: ${backgroundColor}; border-left: 3px solid ${borderColor};">
+      <div class="today-training-header">
+        <h2 class="today-training-title">${currentDay.title}</h2>
+        <span class="today-training-badge intensity-${currentDay.intensity}">${getIntensityLabel(currentDay.intensity)}</span>
+      </div>
+      <div class="today-training-content">
+        <div class="today-training-details">
+          <h3>План тренування:</h3>
+          <p>${currentDay.details}</p>
+          <p><strong>Тиждень:</strong> ${currentWeek.week} (${getPhaseLabel(currentWeek.phase)})</p>
+        </div>
+        
+        <div class="today-nutrition">
+          <h3>Рекомендації з харчування:</h3>
+          ${nutritionPlan}
+        </div>
+      </div>
+    </div>
+  `;
+}
 
 // Initialize training plan
 function initializeTrainingPlan() {

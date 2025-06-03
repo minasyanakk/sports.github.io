@@ -248,46 +248,121 @@ p {
   margin-bottom: var(--spacing-4);
 }
 
-.hero-subtitle {
+.current-date {
+  font-size: var(--font-size-xl);
+  color: var(--color-gray-700);
+  margin: var(--spacing-4) 0;
+  font-weight: 500;
+}
+
+.real-date {
   font-size: var(--font-size-lg);
-  color: var(--color-gray-600);
-  max-width: 600px;
-  margin: 0 auto var(--spacing-8);
+  color: var(--color-gray-700);
+  margin-bottom: var(--spacing-2);
 }
 
-.metrics-container {
-  display: flex;
-  justify-content: center;
-  gap: var(--spacing-6);
-  margin-top: var(--spacing-8);
+.demo-date {
+  font-size: var(--font-size-base);
+  color: var(--color-primary-600);
+  background-color: var(--color-primary-50);
+  padding: var(--spacing-2) var(--spacing-4);
+  border-radius: var(--radius-md);
+  display: inline-block;
 }
 
-.metric-card {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: var(--spacing-4) var(--spacing-6);
+.today-training-container {
+  width: 100%;
+  max-width: 700px;
+  margin: var(--spacing-4) auto;
   background-color: var(--color-background);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal);
+  padding: var(--spacing-6);
+  min-height: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 
-.metric-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
+.today-training-card {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
 
-.metric-value {
-  font-size: var(--font-size-3xl);
-  font-weight: 700;
-  color: var(--color-primary-600);
+.today-training-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4);
+  border-bottom: 1px solid var(--color-gray-200);
 }
 
-.metric-label {
-  font-size: var(--font-size-sm);
-  color: var(--color-gray-500);
-  margin-top: var(--spacing-1);
+.today-training-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  color: var(--color-gray-900);
+  margin: 0;
+}
+
+.today-training-badge {
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.today-training-content {
+  padding: var(--spacing-4);
+}
+
+.today-training-details {
+  margin-bottom: var(--spacing-4);
+}
+
+.today-training-details h3 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-2);
+}
+
+.today-training-details p {
+  margin-bottom: var(--spacing-2);
+}
+
+.today-nutrition {
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-4);
+  margin-top: var(--spacing-4);
+}
+
+.today-nutrition h3 {
+  font-size: var(--font-size-lg);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-gray-800);
+}
+
+.today-nutrition-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.today-nutrition-list li {
+  padding: var(--spacing-2) 0;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.today-nutrition-list li:last-child {
+  border-bottom: none;
+}
+
+.no-training {
+  text-align: center;
+  color: var(--color-gray-600);
+  padding: var(--spacing-8);
 }
 
 .hero-decoration {
