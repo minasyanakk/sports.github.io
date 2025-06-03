@@ -25,7 +25,8 @@ function initializeTrainingPlan() {
   const mobileCards = document.getElementById('mobileCards');
   
   // Calculate start date (June 9, 2025 - next Monday)
-  const startDate = new Date(2025, 5, 9); // June 9, 2025 (months are 0-indexed)
+  // Используем время 12:00, чтобы избежать проблем с часовым поясом
+  const startDate = new Date(2025, 5, 9, 12, 0, 0); // June 9, 2025 (months are 0-indexed)
   
   // Populate table with training plan data
   trainingPlan.forEach(week => {
@@ -634,7 +635,8 @@ METHOD:PUBLISH
 `;
 
   // Set start date to next Monday (June 9, 2025)
-  const startDate = new Date(2025, 5, 9); // June 9, 2025 (months are 0-indexed)
+  // Используем время 12:00, чтобы избежать проблем с часовым поясом
+  const startDate = new Date(2025, 5, 9, 12, 0, 0); // June 9, 2025 (months are 0-indexed)
   
   // Generate events for each training session
   filteredPlan.forEach(week => {
@@ -814,7 +816,15 @@ function showTrainingDetails(trainingCell) {
   // Format date
   let dateDisplay = '';
   if (dateString) {
-    const date = new Date(dateString);
+    // Исправление проблемы с часовым поясом (добавляем день)
+    const dateParts = dateString.split('-');
+    // Создаем дату с временем 12:00, чтобы избежать проблем с часовым поясом
+    const date = new Date(
+      parseInt(dateParts[0]), 
+      parseInt(dateParts[1]) - 1, 
+      parseInt(dateParts[2]), 
+      12, 0, 0
+    );
     dateDisplay = date.toLocaleDateString('uk-UA', { 
       weekday: 'long', 
       day: 'numeric', 
