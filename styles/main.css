@@ -468,11 +468,13 @@ p {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  cursor: pointer; /* Указатель при наведении */
 }
 
 .training-cell:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
+  background-color: rgba(255, 255, 255, 0.5); /* Светлый фон при наведении */
 }
 
 .training-type-run {
@@ -857,6 +859,160 @@ p {
   font-size: var(--font-size-sm);
   color: var(--color-gray-600);
   margin-bottom: 0;
+}
+
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal.show {
+  display: flex;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+  background-color: white;
+  border-radius: var(--radius-lg);
+  width: 90%;
+  max-width: 700px;
+  max-height: 90vh;
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  transform: scale(0.9);
+  transition: transform 0.3s ease;
+}
+
+.modal.show .modal-content {
+  transform: scale(1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.modal-title {
+  font-size: var(--font-size-xl);
+  font-weight: 600;
+  margin: 0;
+  color: var(--color-gray-900);
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 24px;
+  color: var(--color-gray-500);
+  transition: color 0.2s ease;
+}
+
+.modal-close:hover {
+  color: var(--color-gray-800);
+}
+
+.modal-body {
+  padding: var(--spacing-6);
+  overflow-y: auto;
+  max-height: calc(90vh - 80px);
+}
+
+.modal-training-details {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-6);
+}
+
+.modal-section {
+  background-color: var(--color-gray-50);
+  border-radius: var(--radius-lg);
+  padding: var(--spacing-4);
+}
+
+.section-title {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-4);
+  color: var(--color-gray-800);
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Badges for modal */
+.badge {
+  display: inline-block;
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+}
+
+.badge-run {
+  background-color: rgba(59, 130, 246, 0.2);
+  color: #1e40af;
+}
+
+.badge-strength {
+  background-color: rgba(245, 158, 11, 0.2);
+  color: #92400e;
+}
+
+.badge-bike {
+  background-color: rgba(16, 185, 129, 0.2);
+  color: #065f46;
+}
+
+.badge-rest {
+  background-color: rgba(107, 114, 128, 0.2);
+  color: #374151;
+}
+
+.badge-intensity-easy {
+  background-color: #dcfce7;
+  color: #166534;
+}
+
+.badge-intensity-moderate {
+  background-color: #ffedd5;
+  color: #9a3412;
+}
+
+.badge-intensity-hard {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.training-instructions {
+  background-color: white;
+  padding: var(--spacing-3);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-gray-200);
+  margin-top: var(--spacing-2);
+}
+
+.modal-training-info {
+  line-height: 1.6;
 }
 
 /* Responsive styles */

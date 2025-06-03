@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeTrainingPlan();
     initializeCharts();
     initializeTabSwitching();
+    initializeModal();
   }, 1500);
   
   // Initialize event listeners
@@ -44,7 +45,7 @@ function initializeTrainingPlan() {
     week.days.forEach(day => {
       const dayCell = document.createElement('td');
       dayCell.innerHTML = `
-        <div class="training-cell training-type-${day.type}">
+        <div class="training-cell training-type-${day.type}" data-day="${day.day}" data-type="${day.type}" data-title="${day.title}" data-details="${day.details}" data-intensity="${day.intensity}" data-week="${week.week}" data-phase="${week.phase}">
           <div class="training-title">${day.title}</div>
           <div class="training-details">${day.details}</div>
           <span class="training-intensity intensity-${day.intensity}">${getIntensityLabel(day.intensity)}</span>
@@ -75,7 +76,7 @@ function initializeTrainingPlan() {
       dayCard.innerHTML = `
         <div class="mobile-day-name">${day.day}</div>
         <div class="mobile-day-content">
-          <div class="training-cell training-type-${day.type}">
+          <div class="training-cell training-type-${day.type}" data-day="${day.day}" data-type="${day.type}" data-title="${day.title}" data-details="${day.details}" data-intensity="${day.intensity}" data-week="${week.week}" data-phase="${week.phase}">
             <div class="training-title">${day.title}</div>
             <div class="training-details">${day.details}</div>
             <span class="training-intensity intensity-${day.intensity}">${getIntensityLabel(day.intensity)}</span>
@@ -742,4 +743,278 @@ function closeModal() {
       modal.style.display = 'none';
     }, 300);
   }
+}
+
+// Initialize training modal
+function initializeModal() {
+  const trainingModal = document.getElementById('trainingModal');
+  const modalClose = document.getElementById('modalClose');
+  
+  // Add event listener to close button
+  modalClose.addEventListener('click', () => {
+    trainingModal.classList.remove('show');
+  });
+  
+  // Close modal when clicking outside of content
+  trainingModal.addEventListener('click', (e) => {
+    if (e.target === trainingModal) {
+      trainingModal.classList.remove('show');
+    }
+  });
+  
+  // Add event listeners to all training cells
+  document.addEventListener('click', (e) => {
+    const trainingCell = e.target.closest('.training-cell');
+    if (trainingCell) {
+      showTrainingDetails(trainingCell);
+    }
+  });
+}
+
+// Show training details in modal
+function showTrainingDetails(trainingCell) {
+  // Get training data from attributes
+  const day = trainingCell.getAttribute('data-day');
+  const title = trainingCell.getAttribute('data-title');
+  const details = trainingCell.getAttribute('data-details');
+  const type = trainingCell.getAttribute('data-type');
+  const intensity = trainingCell.getAttribute('data-intensity');
+  const week = trainingCell.getAttribute('data-week');
+  const phase = trainingCell.getAttribute('data-phase');
+  
+  // Set modal title
+  const modalTitle = document.getElementById('modalTitle');
+  modalTitle.textContent = `${day}: ${title}`;
+  
+  // Set training plan details
+  const modalTrainingPlan = document.getElementById('modalTrainingPlan');
+  modalTrainingPlan.innerHTML = `
+    <div class="modal-training-info">
+      <p><strong>Тиждень:</strong> ${week} (${getPhaseLabel(phase)})</p>
+      <p><strong>Тип:</strong> <span class="badge badge-${type}">${getTrainingTypeLabel(type)}</span></p>
+      <p><strong>Інтенсивність:</strong> <span class="badge badge-intensity-${intensity}">${getIntensityLabel(intensity)}</span></p>
+      <p><strong>Деталі:</strong></p>
+      <div class="training-instructions">${details}</div>
+    </div>
+  `;
+  
+  // Set nutrition plan based on training type and intensity
+  const modalNutritionPlan = document.getElementById('modalNutritionPlan');
+  modalNutritionPlan.innerHTML = getNutritionPlan(type, intensity, phase);
+  
+  // Show modal
+  const trainingModal = document.getElementById('trainingModal');
+  trainingModal.classList.add('show');
+}
+
+// Get training type label
+function getTrainingTypeLabel(type) {
+  const types = {
+    'run': 'Біг',
+    'strength': 'Силове тренування',
+    'bike': 'Велосипед',
+    'rest': 'Відпочинок'
+  };
+  return types[type] || type;
+}
+
+// Get nutrition plan based on training type and intensity
+function getNutritionPlan(type, intensity, phase) {
+  let nutritionHTML = '';
+  
+  // Basic recommendations for all training types
+  const basicRecommendations = `
+    <p><strong>Загальні рекомендації:</strong></p>
+    <ul>
+      <li>Вживайте достатньо води протягом дня (30-40 мл на кг ваги тіла)</li>
+      <li>Збалансоване харчування з акцентом на цільні продукти</li>
+      <li>Уникайте важкої їжі за 2-3 години до тренування</li>
+    </ul>
+  `;
+  
+  // Specific recommendations based on training type
+  switch (type) {
+    case 'run':
+      if (intensity === 'hard') {
+        nutritionHTML = `
+          <h5>Харчування для інтенсивного бігового тренування</h5>
+          <p><strong>До тренування (за 2-3 години):</strong></p>
+          <ul>
+            <li>Вуглеводи з низьким ГІ: вівсянка, хліб з цільного зерна, фрукти</li>
+            <li>Помірна кількість білка: яйця, йогурт, протеїновий коктейль</li>
+            <li>Мінімум жирів</li>
+          </ul>
+          <p><strong>Під час тренування (якщо більше 60 хв):</strong></p>
+          <ul>
+            <li>Спортивні напої або гелі (30-60 г вуглеводів на годину)</li>
+            <li>Вода за потребою</li>
+          </ul>
+          <p><strong>Після тренування (протягом 30 хв):</strong></p>
+          <ul>
+            <li>Співвідношення вуглеводів до білків 3:1 або 4:1</li>
+            <li>Швидкі вуглеводи: банан, спортивний напій, виноград</li>
+            <li>Якісний білок: протеїновий коктейль, молоко, йогурт</li>
+          </ul>
+        `;
+      } else if (intensity === 'moderate') {
+        nutritionHTML = `
+          <h5>Харчування для помірного бігового тренування</h5>
+          <p><strong>До тренування (за 1-2 години):</strong></p>
+          <ul>
+            <li>Легкий прийом їжі багатий на вуглеводи</li>
+            <li>Банан, тост з медом, йогурт з фруктами</li>
+          </ul>
+          <p><strong>Під час тренування:</strong></p>
+          <ul>
+            <li>Вода за потребою</li>
+          </ul>
+          <p><strong>Після тренування:</strong></p>
+          <ul>
+            <li>Протягом 45-60 хвилин: вуглеводи та білки</li>
+            <li>Смузі з фруктами та молоком/йогуртом</li>
+            <li>Сендвіч з індичкою</li>
+          </ul>
+        `;
+      } else { // easy
+        nutritionHTML = `
+          <h5>Харчування для легкого бігового тренування</h5>
+          <p><strong>До тренування:</strong></p>
+          <ul>
+            <li>Легкий перекус за потреби</li>
+            <li>Фрукт або невеликий йогурт</li>
+          </ul>
+          <p><strong>Під час тренування:</strong></p>
+          <ul>
+            <li>Вода за потребою</li>
+          </ul>
+          <p><strong>Після тренування:</strong></p>
+          <ul>
+            <li>Звичайний прийом їжі за розкладом</li>
+            <li>Достатня кількість води для відновлення</li>
+          </ul>
+        `;
+      }
+      break;
+      
+    case 'strength':
+      nutritionHTML = `
+        <h5>Харчування для силового тренування</h5>
+        <p><strong>До тренування (за 1-2 години):</strong></p>
+        <ul>
+          <li>Вуглеводи з середнім ГІ + якісний білок</li>
+          <li>Каша з молоком та фруктами</li>
+          <li>Тост з яйцем або індичкою</li>
+        </ul>
+        <p><strong>Під час тренування:</strong></p>
+        <ul>
+          <li>Вода або електролітний напій</li>
+        </ul>
+        <p><strong>Після тренування (протягом 30-60 хв):</strong></p>
+        <ul>
+          <li>Підвищена кількість білка: 20-30 г</li>
+          <li>Протеїновий коктейль з бананом</li>
+          <li>Куряча грудка з рисом</li>
+          <li>Омлет з овочами та тостами</li>
+        </ul>
+      `;
+      break;
+      
+    case 'bike':
+      nutritionHTML = `
+        <h5>Харчування для велосипедного тренування</h5>
+        <p><strong>До тренування (за 1-3 години):</strong></p>
+        <ul>
+          <li>Складні вуглеводи + помірний білок</li>
+          <li>Вівсянка з бананом та медом</li>
+          <li>Паста з легким соусом</li>
+        </ul>
+        <p><strong>Під час тренування (якщо більше 60 хв):</strong></p>
+        <ul>
+          <li>60-90 г вуглеводів на годину</li>
+          <li>Спортивні напої, банани, енергетичні батончики</li>
+          <li>Регулярна гідратація</li>
+        </ul>
+        <p><strong>Після тренування:</strong></p>
+        <ul>
+          <li>Вуглеводи з високим ГІ + білок</li>
+          <li>Шоколадне молоко</li>
+          <li>Фруктовий смузі з протеїном</li>
+          <li>Повноцінний прийом їжі протягом 2 годин після тренування</li>
+        </ul>
+      `;
+      break;
+      
+    case 'rest':
+      nutritionHTML = `
+        <h5>Харчування в день відпочинку</h5>
+        <p><strong>Загальні рекомендації:</strong></p>
+        <ul>
+          <li>Знижена кількість вуглеводів порівняно з тренувальними днями</li>
+          <li>Достатня кількість білка для відновлення м'язів</li>
+          <li>Збільшена кількість овочів та фруктів</li>
+          <li>Корисні жири для підтримки гормонального балансу</li>
+        </ul>
+        <p><strong>Приклад раціону:</strong></p>
+        <ul>
+          <li>Сніданок: омлет з овочами, авокадо, тост з цільнозернового хліба</li>
+          <li>Обід: салат з куркою гриль та горіхами, заправлений оливковою олією</li>
+          <li>Вечеря: запечена риба з овочами та невеликою порцією кіноа</li>
+          <li>Перекуси: йогурт, фрукти, горіхи</li>
+        </ul>
+      `;
+      break;
+      
+    default:
+      nutritionHTML = `
+        <p>Специфічні рекомендації для цього типу тренування відсутні.</p>
+      `;
+  }
+  
+  // Add phase-specific recommendations
+  let phaseRecommendations = '';
+  switch (phase) {
+    case 'base':
+      phaseRecommendations = `
+        <h5>Особливості харчування в базовий період</h5>
+        <ul>
+          <li>Збалансоване співвідношення макроелементів</li>
+          <li>Фокус на створенні здорових харчових звичок</li>
+          <li>Достатня кількість мікроелементів (особливо залізо, кальцій, вітаміни групи B)</li>
+        </ul>
+      `;
+      break;
+    case 'build':
+      phaseRecommendations = `
+        <h5>Особливості харчування в будівельний період</h5>
+        <ul>
+          <li>Підвищена кількість калорій для підтримки зростаючого навантаження</li>
+          <li>Збільшення споживання вуглеводів перед складними тренуваннями</li>
+          <li>Особлива увага відновленню після інтенсивних тренувань</li>
+        </ul>
+      `;
+      break;
+    case 'intense':
+      phaseRecommendations = `
+        <h5>Особливості харчування в інтенсивний період</h5>
+        <ul>
+          <li>Максимальне споживання вуглеводів у дні важких тренувань</li>
+          <li>Планування періодизації вуглеводів (більше в дні важких тренувань)</li>
+          <li>Підвищена увага до відновлення та якості харчування</li>
+        </ul>
+      `;
+      break;
+    case 'taper':
+      phaseRecommendations = `
+        <h5>Особливості харчування в період підводки</h5>
+        <ul>
+          <li>Поступове зниження калорійності з наближенням до змагань</li>
+          <li>Підтримання високого споживання вуглеводів</li>
+          <li>Вуглеводне завантаження за 2-3 дні до змагань</li>
+          <li>Зменшення кількості клітковини перед змаганнями</li>
+        </ul>
+      `;
+      break;
+  }
+  
+  return `${nutritionHTML}${phaseRecommendations}${basicRecommendations}`;
 }
