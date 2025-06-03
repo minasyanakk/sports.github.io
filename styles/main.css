@@ -365,6 +365,116 @@ p {
   padding: var(--spacing-8);
 }
 
+.program-not-started {
+  margin-bottom: var(--spacing-4);
+  text-align: center;
+}
+
+.program-not-started h3 {
+  margin-top: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+  color: var(--color-primary-700);
+}
+
+.today-training-card.compact {
+  box-shadow: var(--shadow-md);
+  margin-bottom: var(--spacing-4);
+}
+
+.today-training-card.compact .today-training-header {
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.today-training-card.compact .today-training-content {
+  padding: var(--spacing-3) var(--spacing-4);
+}
+
+.training-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-2);
+}
+
+.training-meta-item {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-600);
+  background-color: var(--color-gray-100);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--radius-md);
+}
+
+.collapsible-section {
+  margin-top: var(--spacing-3);
+  border-top: 1px solid var(--color-gray-200);
+  padding-top: var(--spacing-3);
+}
+
+.collapsible-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+}
+
+.collapsible-header h3 {
+  margin: 0;
+  font-size: var(--font-size-base);
+  color: var(--color-gray-800);
+}
+
+.toggle-button {
+  background-color: var(--color-gray-100);
+  border: 1px solid var(--color-gray-300);
+  color: var(--color-gray-700);
+  padding: var(--spacing-1) var(--spacing-3);
+  border-radius: var(--radius-md);
+  font-size: var(--font-size-xs);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.toggle-button:hover {
+  background-color: var(--color-gray-200);
+  color: var(--color-gray-900);
+}
+
+.collapsible-content {
+  margin-top: var(--spacing-3);
+  transition: all 0.3s ease;
+  overflow: hidden;
+  max-height: 1000px;
+}
+
+.collapsible-content.hidden {
+  max-height: 0;
+  margin-top: 0;
+  overflow: hidden;
+}
+
+.next-training-section {
+  margin-top: var(--spacing-4);
+}
+
+.next-training-section h3 {
+  font-size: var(--font-size-base);
+  margin-bottom: var(--spacing-2);
+  text-align: center;
+  color: var(--color-gray-700);
+  background-color: var(--color-gray-100);
+  padding: var(--spacing-1) 0;
+  border-radius: var(--radius-md);
+}
+
+.next-training {
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+.next-training:hover {
+  opacity: 1;
+}
+
 .hero-decoration {
   position: absolute;
   top: 0;

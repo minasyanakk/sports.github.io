@@ -33,8 +33,10 @@ function displayCurrentDateAndTraining(testDate) {
   
   // For development/testing - use a mock date inside the training program
   // This makes the current training visible even before the program starts
-  // In production, comment this out and use the line above
-  const today = new Date(2025, 5, 15, 12, 0, 0); // June 15, 2025 (week 1, day 7)
+  // Раскомментируйте для тестирования выходного дня (воскресенье)
+  // const today = new Date(2025, 5, 15, 12, 0, 0); // June 15, 2025 (week 1, Sunday)
+  // Или используйте реальную дату
+  const today = realToday;
   
   // Display real current date
   const realFormattedDate = realToday.toLocaleDateString('uk-UA', { 
@@ -68,12 +70,71 @@ function displayCurrentDateAndTraining(testDate) {
   
   // Check if today is before the program start
   if (today < programStartDate) {
+    // Show first training from the program (for the future start date)
+    const firstWeek = trainingPlan[0];
+    const firstDay = firstWeek.days[0]; // Monday of first week
+    
+    // Get background color based on training type
+    let backgroundColor, borderColor;
+    switch (firstDay.type) {
+      case 'run':
+        backgroundColor = 'rgba(59, 130, 246, 0.1)';
+        borderColor = 'var(--color-run)';
+        break;
+      case 'strength':
+        backgroundColor = 'rgba(245, 158, 11, 0.1)';
+        borderColor = 'var(--color-strength)';
+        break;
+      case 'bike':
+        backgroundColor = 'rgba(16, 185, 129, 0.1)';
+        borderColor = 'var(--color-bike)';
+        break;
+      case 'rest':
+        backgroundColor = 'rgba(107, 114, 128, 0.1)';
+        borderColor = 'var(--color-rest)';
+        break;
+    }
+    
+    // Get nutrition plan
+    const nutritionPlan = getNutritionPlan(firstDay.type, firstDay.intensity, firstWeek.phase);
+    
+    // Display first training
     todayTrainingContainer.innerHTML = `
-      <div class="no-training">
-        <h3>Програма тренувань ще не почалася</h3>
-        <p>Тренування почнуться з ${programStartDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+      <div class="program-not-started">
+        <p>Програма тренувань починається з ${programStartDate.toLocaleDateString('uk-UA', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+        <h3>Перше тренування в програмі:</h3>
+      </div>
+      <div class="today-training-card compact" style="background-color: ${backgroundColor}; border-left: 3px solid ${borderColor};">
+        <div class="today-training-header">
+          <h2 class="today-training-title">${firstDay.title} (${firstDay.day})</h2>
+          <span class="today-training-badge intensity-${firstDay.intensity}">${getIntensityLabel(firstDay.intensity)}</span>
+        </div>
+        <div class="today-training-content">
+          <div class="today-training-details">
+            <p>${firstDay.details}</p>
+            <div class="training-meta">
+              <span class="training-meta-item">Тиждень: ${firstWeek.week}</span>
+              <span class="training-meta-item">Фаза: ${getPhaseLabel(firstWeek.phase)}</span>
+            </div>
+          </div>
+          
+          <div class="collapsible-section">
+            <div class="collapsible-header">
+              <h3>Рекомендації з харчування</h3>
+              <button class="toggle-button">Показати</button>
+            </div>
+            <div class="collapsible-content hidden">
+              ${nutritionPlan}
+            </div>
+          </div>
+        </div>
       </div>
     `;
+    
+    // Add event listener for collapsible section
+    setTimeout(() => {
+      initializeCollapsibleSections();
+    }, 100);
     return;
   }
   
@@ -99,6 +160,49 @@ function displayCurrentDateAndTraining(testDate) {
   const currentWeek = trainingPlan[currentWeekIndex];
   const currentDay = currentWeek.days[currentDayIndex];
   
+  // Check if today is a rest day, if so, find next training day
+  let isRestDay = currentDay.type === 'rest';
+  let nextTrainingDay = null;
+  let nextTrainingDayDate = null;
+  
+  if (isRestDay) {
+    // Find next training day
+    let foundNext = false;
+    let searchWeekIndex = currentWeekIndex;
+    let searchDayIndex = currentDayIndex;
+    
+    // Try to find next training day in current week or subsequent weeks
+    while (!foundNext && searchWeekIndex < trainingPlan.length) {
+      // Move to next day
+      searchDayIndex++;
+      
+      // If we've gone past the end of the week, move to next week
+      if (searchDayIndex >= 7) {
+        searchWeekIndex++;
+        searchDayIndex = 0;
+        
+        // If we've gone past the end of the plan, break
+        if (searchWeekIndex >= trainingPlan.length) {
+          break;
+        }
+      }
+      
+      // Get training for this day
+      const searchDay = trainingPlan[searchWeekIndex].days[searchDayIndex];
+      
+      // If it's not a rest day, we've found our next training
+      if (searchDay.type !== 'rest') {
+        nextTrainingDay = searchDay;
+        foundNext = true;
+        
+        // Calculate date for this training
+        const nextDate = new Date(programStartDate);
+        nextDate.setDate(programStartDate.getDate() + (searchWeekIndex * 7) + searchDayIndex);
+        nextTrainingDayDate = nextDate;
+      }
+    }
+  }
+  
   // Get background color based on training type
   let backgroundColor, borderColor;
   switch (currentDay.type) {
@@ -123,27 +227,113 @@ function displayCurrentDateAndTraining(testDate) {
   // Get nutrition plan
   const nutritionPlan = getNutritionPlan(currentDay.type, currentDay.intensity, currentWeek.phase);
   
-  // Display current training
-  todayTrainingContainer.innerHTML = `
-    <div class="today-training-card" style="background-color: ${backgroundColor}; border-left: 3px solid ${borderColor};">
-      <div class="today-training-header">
-        <h2 class="today-training-title">${currentDay.title}</h2>
-        <span class="today-training-badge intensity-${currentDay.intensity}">${getIntensityLabel(currentDay.intensity)}</span>
-      </div>
-      <div class="today-training-content">
-        <div class="today-training-details">
-          <h3>План тренування:</h3>
-          <p>${currentDay.details}</p>
-          <p><strong>Тиждень:</strong> ${currentWeek.week} (${getPhaseLabel(currentWeek.phase)})</p>
+  // Check if we need to show rest day or next training
+  if (isRestDay && nextTrainingDay) {
+    // Format date for next training
+    const nextTrainingDateFormatted = nextTrainingDayDate.toLocaleDateString('uk-UA', {
+      weekday: 'long',
+      day: 'numeric',
+      month: 'long'
+    });
+    
+    // Get colors for next training
+    let nextBackgroundColor, nextBorderColor;
+    switch (nextTrainingDay.type) {
+      case 'run':
+        nextBackgroundColor = 'rgba(59, 130, 246, 0.1)';
+        nextBorderColor = 'var(--color-run)';
+        break;
+      case 'strength':
+        nextBackgroundColor = 'rgba(245, 158, 11, 0.1)';
+        nextBorderColor = 'var(--color-strength)';
+        break;
+      case 'bike':
+        nextBackgroundColor = 'rgba(16, 185, 129, 0.1)';
+        nextBorderColor = 'var(--color-bike)';
+        break;
+    }
+    
+    // Get nutrition plan for rest day
+    const restNutritionPlan = getNutritionPlan('rest', 'easy', currentWeek.phase);
+    
+    // Display rest day with next training info
+    todayTrainingContainer.innerHTML = `
+      <div class="today-training-card compact" style="background-color: ${backgroundColor}; border-left: 3px solid ${borderColor};">
+        <div class="today-training-header">
+          <h2 class="today-training-title">${currentDay.title}</h2>
+          <span class="today-training-badge intensity-${currentDay.intensity}">${getIntensityLabel(currentDay.intensity)}</span>
         </div>
-        
-        <div class="today-nutrition">
-          <h3>Рекомендації з харчування:</h3>
-          ${nutritionPlan}
+        <div class="today-training-content">
+          <div class="today-training-details">
+            <p>${currentDay.details}</p>
+            <div class="training-meta">
+              <span class="training-meta-item">Тиждень: ${currentWeek.week}</span>
+              <span class="training-meta-item">Фаза: ${getPhaseLabel(currentWeek.phase)}</span>
+            </div>
+          </div>
+          
+          <div class="collapsible-section">
+            <div class="collapsible-header">
+              <h3>Рекомендації з харчування</h3>
+              <button class="toggle-button">Показати</button>
+            </div>
+            <div class="collapsible-content hidden">
+              ${restNutritionPlan}
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  `;
+      
+      <div class="next-training-section">
+        <h3>Наступне тренування</h3>
+        <div class="today-training-card compact next-training" style="background-color: ${nextBackgroundColor}; border-left: 3px solid ${nextBorderColor};">
+          <div class="today-training-header">
+            <h2 class="today-training-title">${nextTrainingDay.title} (${nextTrainingDateFormatted})</h2>
+            <span class="today-training-badge intensity-${nextTrainingDay.intensity}">${getIntensityLabel(nextTrainingDay.intensity)}</span>
+          </div>
+          <div class="today-training-content">
+            <div class="today-training-details">
+              <p>${nextTrainingDay.details}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  } else {
+    // Display current training (not a rest day or couldn't find next training)
+    todayTrainingContainer.innerHTML = `
+      <div class="today-training-card compact" style="background-color: ${backgroundColor}; border-left: 3px solid ${borderColor};">
+        <div class="today-training-header">
+          <h2 class="today-training-title">${currentDay.title}</h2>
+          <span class="today-training-badge intensity-${currentDay.intensity}">${getIntensityLabel(currentDay.intensity)}</span>
+        </div>
+        <div class="today-training-content">
+          <div class="today-training-details">
+            <p>${currentDay.details}</p>
+            <div class="training-meta">
+              <span class="training-meta-item">Тиждень: ${currentWeek.week}</span>
+              <span class="training-meta-item">Фаза: ${getPhaseLabel(currentWeek.phase)}</span>
+            </div>
+          </div>
+          
+          <div class="collapsible-section">
+            <div class="collapsible-header">
+              <h3>Рекомендації з харчування</h3>
+              <button class="toggle-button">Показати</button>
+            </div>
+            <div class="collapsible-content hidden">
+              ${nutritionPlan}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+  
+  // Add event listener for collapsible section
+  setTimeout(() => {
+    initializeCollapsibleSections();
+  }, 100);
 }
 
 // Initialize training plan
@@ -994,6 +1184,25 @@ function getTrainingTypeLabel(type) {
     'rest': 'Відпочинок'
   };
   return types[type] || type;
+}
+
+// Initialize collapsible sections
+function initializeCollapsibleSections() {
+  const toggleButtons = document.querySelectorAll('.toggle-button');
+  
+  toggleButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      const content = button.closest('.collapsible-section').querySelector('.collapsible-content');
+      
+      if (content.classList.contains('hidden')) {
+        content.classList.remove('hidden');
+        button.textContent = 'Сховати';
+      } else {
+        content.classList.add('hidden');
+        button.textContent = 'Показати';
+      }
+    });
+  });
 }
 
 // Get nutrition plan based on training type and intensity
