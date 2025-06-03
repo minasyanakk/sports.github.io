@@ -30,6 +30,11 @@ function initializeTrainingPlan() {
     tableRow.setAttribute('data-phase', week.phase);
     tableRow.classList.add('staggered-list-item');
     
+    // For debugging
+    if (week.phase === 'taper') {
+      console.log(`Adding taper week ${week.week} to table`);
+    }
+    
     // Add week number cell
     const weekCell = document.createElement('td');
     weekCell.innerHTML = `<strong>Тиждень ${week.week}</strong><br><span class="phase-label">${getPhaseLabel(week.phase)}</span>`;
@@ -54,6 +59,11 @@ function initializeTrainingPlan() {
     const weekCard = document.createElement('div');
     weekCard.className = 'mobile-week-card staggered-list-item';
     weekCard.setAttribute('data-phase', week.phase);
+    
+    // Debug for mobile cards
+    if (week.phase === 'taper') {
+      console.log(`Adding taper week ${week.week} to mobile cards`);
+    }
     
     // Add week header
     weekCard.innerHTML = `<div class="mobile-week-header">Тиждень ${week.week} - ${getPhaseLabel(week.phase)}</div>`;
@@ -112,6 +122,15 @@ function initializeEventListeners() {
       
       // Filter training plan
       const period = button.getAttribute('data-period');
+      console.log(`Button clicked: ${period}`);
+      
+      // Check if we have training weeks with this phase
+      const weeksWithPhase = trainingPlan.filter(week => week.phase === period);
+      console.log(`Training weeks with phase '${period}': ${weeksWithPhase.length}`);
+      if (weeksWithPhase.length > 0) {
+        console.log(`Week numbers: ${weeksWithPhase.map(w => w.week).join(', ')}`);
+      }
+      
       filterTrainingPlan(period);
     });
   });
@@ -167,21 +186,46 @@ function filterTrainingPlan(period) {
   const allRows = document.querySelectorAll('#trainingPlanBody tr');
   const allMobileCards = document.querySelectorAll('.mobile-week-card');
   
+  // Log detailed info for debugging
+  console.log('All rows: ', allRows.length);
+  allRows.forEach((row, i) => {
+    const phase = row.getAttribute('data-phase');
+    console.log(`Row ${i}: phase=${phase}, week=${row.querySelector('td:first-child strong')?.textContent}`);
+  });
+  
   if (period === 'all') {
-    // Show all weeks
-    allRows.forEach(row => row.style.display = '');
-    allMobileCards.forEach(card => card.style.display = '');
+    // Show all weeks with explicit display values
+    allRows.forEach(row => row.style.display = 'table-row');
+    allMobileCards.forEach(card => card.style.display = 'block');
   } else {
-    // Filter by phase
+    // Filter by phase - improved to ensure display property is set correctly
+    console.log(`Filtering for phase: ${period}`);
+    
     allRows.forEach(row => {
       const rowPhase = row.getAttribute('data-phase');
-      row.style.display = rowPhase === period ? '' : 'none';
+      console.log(`Row phase: ${rowPhase}, match: ${rowPhase === period}`);
+      
+      if (rowPhase === period) {
+        row.style.display = 'table-row'; // Explicitly set to table-row
+      } else {
+        row.style.display = 'none';
+      }
     });
     
     allMobileCards.forEach(card => {
       const cardPhase = card.getAttribute('data-phase');
-      card.style.display = cardPhase === period ? '' : 'none';
+      
+      if (cardPhase === period) {
+        card.style.display = 'block'; // Explicitly set to block
+      } else {
+        card.style.display = 'none';
+      }
     });
+    
+    // Log results for debugging
+    console.log(`Filtering by period: ${period}`);
+    console.log(`Rows with phase ${period}: ${document.querySelectorAll(`#trainingPlanBody tr[data-phase="${period}"]`).length}`);
+    console.log(`Visible rows: ${document.querySelectorAll('#trainingPlanBody tr[style="display: table-row;"]').length}`);
   }
 }
 
