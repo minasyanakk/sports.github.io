@@ -429,8 +429,10 @@ p {
 
 .training-plan-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   text-align: left;
+  table-layout: fixed; /* Фиксированная ширина столбцов */
 }
 
 .training-plan-table th {
@@ -440,12 +442,18 @@ p {
   background-color: var(--color-gray-50);
   padding: var(--spacing-3) var(--spacing-4);
   border-bottom: 1px solid var(--color-gray-200);
+  width: calc(100% / 8); /* Равномерное распределение ширины (1 колонка для недели + 7 дней) */
+}
+
+.training-plan-table th:first-child {
+  width: 120px; /* Фиксированная ширина для колонки с номером недели */
 }
 
 .training-plan-table td {
-  padding: var(--spacing-4);
+  padding: var(--spacing-2);
   border-bottom: 1px solid var(--color-gray-200);
   transition: background-color var(--transition-fast);
+  vertical-align: top;
 }
 
 .training-plan-table tr:hover td {
@@ -456,6 +464,10 @@ p {
   border-radius: var(--radius-md);
   padding: var(--spacing-3);
   transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+  height: 150px; /* Фиксированная высота для всех карточек */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .training-cell:hover {
@@ -492,6 +504,9 @@ p {
 .training-details {
   font-size: var(--font-size-xs);
   color: var(--color-gray-600);
+  flex-grow: 1; /* Позволяет детали заполнять доступное пространство */
+  overflow: auto; /* Добавляет прокрутку, если текст слишком длинный */
+  height: 70px; /* Фиксированная высота для деталей */
 }
 
 .training-intensity {
@@ -501,6 +516,7 @@ p {
   padding: var(--spacing-1) var(--spacing-2);
   border-radius: var(--radius-full);
   margin-top: var(--spacing-1);
+  align-self: flex-start; /* Привязывает метку интенсивности к нижней части */
 }
 
 .intensity-easy {
@@ -555,6 +571,14 @@ p {
 
 .mobile-day-content {
   flex: 1;
+}
+
+/* Убедимся, что на мобильных устройствах карточки тоже одинакового размера */
+.mobile-day-content .training-cell {
+  height: 150px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 /* Additional sections */
