@@ -460,6 +460,24 @@ p {
   background-color: var(--color-gray-50);
 }
 
+.date-range {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  margin-top: var(--spacing-1);
+  display: block;
+}
+
+.day-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  margin-bottom: var(--spacing-1);
+  display: block;
+  text-align: center;
+  padding: 2px 0;
+  background-color: var(--color-gray-100);
+  border-radius: var(--radius-sm);
+}
+
 .training-cell {
   border-radius: var(--radius-md);
   padding: var(--spacing-3);
@@ -569,6 +587,18 @@ p {
   flex: 0 0 100px;
   font-weight: 500;
   color: var(--color-gray-700);
+}
+
+.mobile-day-date {
+  font-size: var(--font-size-xs);
+  color: var(--color-gray-500);
+  margin-top: var(--spacing-1);
+}
+
+.mobile-week-dates {
+  font-size: var(--font-size-xs);
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: var(--spacing-1);
 }
 
 .mobile-day-content {

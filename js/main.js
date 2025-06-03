@@ -24,6 +24,9 @@ function initializeTrainingPlan() {
   const trainingPlanBody = document.getElementById('trainingPlanBody');
   const mobileCards = document.getElementById('mobileCards');
   
+  // Calculate start date (June 9, 2025 - next Monday)
+  const startDate = new Date(2025, 5, 9); // June 9, 2025 (months are 0-indexed)
+  
   // Populate table with training plan data
   trainingPlan.forEach(week => {
     // Create table row
@@ -36,16 +39,37 @@ function initializeTrainingPlan() {
       console.log(`Adding taper week ${week.week} to table`);
     }
     
-    // Add week number cell
+    // Calculate week start date
+    const weekStartDate = new Date(startDate);
+    weekStartDate.setDate(startDate.getDate() + (week.week - 1) * 7);
+    const weekEndDate = new Date(weekStartDate);
+    weekEndDate.setDate(weekStartDate.getDate() + 6);
+    
+    // Format dates
+    const formatDate = (date) => {
+      return date.toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' });
+    };
+    
+    // Add week number cell with dates
     const weekCell = document.createElement('td');
-    weekCell.innerHTML = `<strong>Тиждень ${week.week}</strong><br><span class="phase-label">${getPhaseLabel(week.phase)}</span>`;
+    weekCell.innerHTML = `
+      <strong>Тиждень ${week.week}</strong><br>
+      <span class="phase-label">${getPhaseLabel(week.phase)}</span><br>
+      <span class="date-range">${formatDate(weekStartDate)} - ${formatDate(weekEndDate)}</span>
+    `;
     tableRow.appendChild(weekCell);
     
     // Add day cells
-    week.days.forEach(day => {
+    week.days.forEach((day, dayIndex) => {
+      // Calculate the date for this specific day
+      const dayDate = new Date(weekStartDate);
+      dayDate.setDate(weekStartDate.getDate() + dayIndex);
+      const formattedDate = formatDate(dayDate);
+      
       const dayCell = document.createElement('td');
       dayCell.innerHTML = `
-        <div class="training-cell training-type-${day.type}" data-day="${day.day}" data-type="${day.type}" data-title="${day.title}" data-details="${day.details}" data-intensity="${day.intensity}" data-week="${week.week}" data-phase="${week.phase}">
+        <div class="day-date">${formattedDate}</div>
+        <div class="training-cell training-type-${day.type}" data-day="${day.day}" data-type="${day.type}" data-title="${day.title}" data-details="${day.details}" data-intensity="${day.intensity}" data-week="${week.week}" data-phase="${week.phase}" data-date="${dayDate.toISOString().split('T')[0]}">
           <div class="training-title">${day.title}</div>
           <div class="training-details">${day.details}</div>
           <span class="training-intensity intensity-${day.intensity}">${getIntensityLabel(day.intensity)}</span>
@@ -66,17 +90,22 @@ function initializeTrainingPlan() {
       console.log(`Adding taper week ${week.week} to mobile cards`);
     }
     
-    // Add week header
-    weekCard.innerHTML = `<div class="mobile-week-header">Тиждень ${week.week} - ${getPhaseLabel(week.phase)}</div>`;
+    // Add week header with date range
+    weekCard.innerHTML = `<div class="mobile-week-header">Тиждень ${week.week} - ${getPhaseLabel(week.phase)}<div class="mobile-week-dates">${formatDate(weekStartDate)} - ${formatDate(weekEndDate)}</div></div>`;
     
     // Add days
-    week.days.forEach(day => {
+    week.days.forEach((day, dayIndex) => {
+      // Calculate the date for this specific day
+      const dayDate = new Date(weekStartDate);
+      dayDate.setDate(weekStartDate.getDate() + dayIndex);
+      const formattedDate = formatDate(dayDate);
+      
       const dayCard = document.createElement('div');
       dayCard.className = 'mobile-day-card';
       dayCard.innerHTML = `
-        <div class="mobile-day-name">${day.day}</div>
+        <div class="mobile-day-name">${day.day}<div class="mobile-day-date">${formattedDate}</div></div>
         <div class="mobile-day-content">
-          <div class="training-cell training-type-${day.type}" data-day="${day.day}" data-type="${day.type}" data-title="${day.title}" data-details="${day.details}" data-intensity="${day.intensity}" data-week="${week.week}" data-phase="${week.phase}">
+          <div class="training-cell training-type-${day.type}" data-day="${day.day}" data-type="${day.type}" data-title="${day.title}" data-details="${day.details}" data-intensity="${day.intensity}" data-week="${week.week}" data-phase="${week.phase}" data-date="${dayDate.toISOString().split('T')[0]}">
             <div class="training-title">${day.title}</div>
             <div class="training-details">${day.details}</div>
             <span class="training-intensity intensity-${day.intensity}">${getIntensityLabel(day.intensity)}</span>
@@ -604,9 +633,8 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 `;
 
-  // Set start date to next Monday
-  const startDate = new Date();
-  startDate.setDate(startDate.getDate() + (8 - startDate.getDay()) % 7);
+  // Set start date to next Monday (June 9, 2025)
+  const startDate = new Date(2025, 5, 9); // June 9, 2025 (months are 0-indexed)
   
   // Generate events for each training session
   filteredPlan.forEach(week => {
@@ -781,10 +809,23 @@ function showTrainingDetails(trainingCell) {
   const intensity = trainingCell.getAttribute('data-intensity');
   const week = trainingCell.getAttribute('data-week');
   const phase = trainingCell.getAttribute('data-phase');
+  const dateString = trainingCell.getAttribute('data-date');
+  
+  // Format date
+  let dateDisplay = '';
+  if (dateString) {
+    const date = new Date(dateString);
+    dateDisplay = date.toLocaleDateString('uk-UA', { 
+      weekday: 'long', 
+      day: 'numeric', 
+      month: 'long', 
+      year: 'numeric' 
+    });
+  }
   
   // Set modal title
   const modalTitle = document.getElementById('modalTitle');
-  modalTitle.textContent = `${day}: ${title}`;
+  modalTitle.textContent = `${day}: ${title}${dateString ? ` (${dateDisplay})` : ''}`;
   
   // Set training plan details
   const modalTrainingPlan = document.getElementById('modalTrainingPlan');
