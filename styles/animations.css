@@ -1,0 +1,336 @@
+/* Animation keyframes */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+/* Loading spinner */
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--color-primary-100);
+  border-radius: 50%;
+  border-top-color: var(--color-primary-600);
+  animation: spin 1s ease-in-out infinite;
+}
+
+/* Shimmer effect */
+.shimmer-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.shimmer-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transform: translateX(-100%);
+  background-image: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0,
+    rgba(255, 255, 255, 0.2) 20%,
+    rgba(255, 255, 255, 0.5) 60%,
+    rgba(255, 255, 255, 0)
+  );
+  animation: shimmer 2s infinite;
+  pointer-events: none;
+}
+
+/* Pulse animation */
+.pulse {
+  animation: pulse 2s infinite;
+}
+
+/* Fade in animation */
+.fade-in {
+  animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+/* Slide up animation */
+.slide-up {
+  animation: slideUp 0.5s ease-in-out forwards;
+}
+
+/* Animated elements with delay */
+.animated-item {
+  opacity: 0;
+}
+
+.animated-item:nth-child(1) {
+  animation: slideUp 0.5s 0.1s ease-in-out forwards;
+}
+
+.animated-item:nth-child(2) {
+  animation: slideUp 0.5s 0.2s ease-in-out forwards;
+}
+
+.animated-item:nth-child(3) {
+  animation: slideUp 0.5s 0.3s ease-in-out forwards;
+}
+
+.animated-item:nth-child(4) {
+  animation: slideUp 0.5s 0.4s ease-in-out forwards;
+}
+
+.animated-item:nth-child(5) {
+  animation: slideUp 0.5s 0.5s ease-in-out forwards;
+}
+
+/* Interactive hover effects */
+.hover-float {
+  transition: transform 0.3s ease;
+}
+
+.hover-float:hover {
+  transform: translateY(-8px);
+}
+
+.hover-scale {
+  transition: transform 0.3s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Button hover effects */
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+  transition: color 0.3s ease;
+}
+
+.btn-primary:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-primary-700);
+  z-index: -2;
+}
+
+.btn-primary:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 100%;
+  background-color: var(--color-primary-800);
+  transition: all 0.3s;
+  z-index: -1;
+}
+
+.btn-primary:hover:before {
+  width: 100%;
+}
+
+/* Page transitions */
+.page-transition-enter {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Staggered animations for lists */
+.staggered-list-item {
+  opacity: 0;
+}
+
+.staggered-list-item:nth-child(1) {
+  animation: fadeIn 0.5s 0.1s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(2) {
+  animation: fadeIn 0.5s 0.2s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(3) {
+  animation: fadeIn 0.5s 0.3s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(4) {
+  animation: fadeIn 0.5s 0.4s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(5) {
+  animation: fadeIn 0.5s 0.5s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(6) {
+  animation: fadeIn 0.5s 0.6s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(7) {
+  animation: fadeIn 0.5s 0.7s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(8) {
+  animation: fadeIn 0.5s 0.8s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(9) {
+  animation: fadeIn 0.5s 0.9s ease-in-out forwards;
+}
+
+.staggered-list-item:nth-child(10) {
+  animation: fadeIn 0.5s 1s ease-in-out forwards;
+}
+
+/* Loading skeleton animation */
+.skeleton {
+  background-color: var(--color-gray-200);
+  background-image: linear-gradient(
+    90deg,
+    var(--color-gray-200),
+    var(--color-gray-100),
+    var(--color-gray-200)
+  );
+  background-size: 200px 100%;
+  background-repeat: no-repeat;
+  border-radius: var(--radius-md);
+  animation: shimmer 1.5s infinite;
+}
+
+.skeleton-text {
+  height: 12px;
+  margin-bottom: 8px;
+  width: 100%;
+}
+
+.skeleton-text:last-child {
+  width: 80%;
+}
+
+.skeleton-title {
+  height: 24px;
+  margin-bottom: 16px;
+  width: 50%;
+}
+
+.skeleton-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+}
+
+.skeleton-card {
+  width: 100%;
+  height: 120px;
+  border-radius: var(--radius-lg);
+}
+
+/* Tooltip animation */
+.tooltip {
+  position: relative;
+}
+
+.tooltip:hover::before {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  background-color: var(--color-gray-800);
+  color: white;
+  font-size: var(--font-size-xs);
+  border-radius: var(--radius-md);
+  white-space: nowrap;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+  z-index: 10;
+}
+
+.tooltip:hover::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px 6px 0;
+  border-style: solid;
+  border-color: var(--color-gray-800) transparent transparent;
+  opacity: 0;
+  animation: fadeIn 0.3s ease-in-out forwards;
+  z-index: 10;
+}
+
+/* Tab switching animation */
+.tab-content {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.tab-content.active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}

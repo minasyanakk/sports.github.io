@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RunPro Enterprise | Платформа для тренувань</title>
+  <link rel="stylesheet" href="styles/main.css">
+  <link rel="stylesheet" href="styles/animations.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <div class="logo-container">
+          <div class="logo">
+            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M16 2C8.268 2 2 8.268 2 16C2 23.732 8.268 30 16 30C23.732 30 30 23.732 30 16C30 8.268 23.732 2 16 2Z" fill="url(#paint0_linear)"/>
+              <path d="M22 12L16 18L10 12" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M16 18V25" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              <defs>
+                <linearGradient id="paint0_linear" x1="2" y1="16" x2="30" y2="16" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#4F46E5"/>
+                  <stop offset="1" stop-color="#7C3AED"/>
+                </linearGradient>
+              </defs>
+            </svg>
+            <span class="logo-text">RunPro Enterprise</span>
+          </div>
+        </div>
+        <div class="header-right">
+          <div class="status-badge active">
+            <span class="status-indicator"></span>
+            <span class="status-text">План активний</span>
+          </div>
+          <div class="version-badge">v1.0.0</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Hero section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">Підготовка до півмарафону</h1>
+        <p class="hero-subtitle">Професійний 12-тижневий план тренувань з інтеграцією силових та велосипедних тренувань</p>
+        
+        <div class="metrics-container">
+          <div class="metric-card shimmer-container">
+            <div class="metric-value">12</div>
+            <div class="metric-label">тижнів</div>
+          </div>
+          <div class="metric-card shimmer-container">
+            <div class="metric-value">48+</div>
+            <div class="metric-label">тренувань</div>
+          </div>
+          <div class="metric-card shimmer-container">
+            <div class="metric-value">21.1</div>
+            <div class="metric-label">кілометрів</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-decoration">
+        <div class="decoration-element"></div>
+        <div class="decoration-element"></div>
+        <div class="decoration-element"></div>
+      </div>
+    </section>
+
+    <!-- Control panel -->
+    <section class="control-panel">
+      <div class="filter-container">
+        <div class="filter-label">Період:</div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-period="all">Всі</button>
+          <button class="filter-btn" data-period="base">Базовий</button>
+          <button class="filter-btn" data-period="build">Будівельний</button>
+          <button class="filter-btn" data-period="intense">Інтенсивний</button>
+          <button class="filter-btn" data-period="taper">Підводка</button>
+        </div>
+      </div>
+      <div class="legend-container">
+        <div class="legend-item">
+          <span class="legend-color" style="--color: var(--color-run)"></span>
+          <span class="legend-text">Біг</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="--color: var(--color-strength)"></span>
+          <span class="legend-text">Силові</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="--color: var(--color-bike)"></span>
+          <span class="legend-text">Велосипед</span>
+        </div>
+        <div class="legend-item">
+          <span class="legend-color" style="--color: var(--color-rest)"></span>
+          <span class="legend-text">Відпочинок</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Main content -->
+    <main class="main-content">
+      <!-- Loading state -->
+      <div class="loading-container" id="loadingContainer">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Завантаження плану тренувань...</p>
+      </div>
+
+      <!-- Training plan table -->
+      <div class="training-plan-container" id="trainingPlanContainer" style="display: none;">
+        <table class="training-plan-table">
+          <thead>
+            <tr>
+              <th>Тиждень</th>
+              <th>Понеділок</th>
+              <th>Вівторок</th>
+              <th>Середа</th>
+              <th>Четвер</th>
+              <th>П'ятниця</th>
+              <th>Субота</th>
+              <th>Неділя</th>
+            </tr>
+          </thead>
+          <tbody id="trainingPlanBody">
+            <!-- Filled by JavaScript -->
+          </tbody>
+        </table>
+
+        <!-- Mobile cards view -->
+        <div class="mobile-cards" id="mobileCards">
+          <!-- Filled by JavaScript -->
+        </div>
+      </div>
+    </main>
+
+    <!-- Additional sections -->
+    <section class="additional-sections">
+      <div class="section-tabs">
+        <button class="tab-btn active" data-tab="nutrition">План харчування</button>
+        <button class="tab-btn" data-tab="calendar">Інтеграція з календарем</button>
+        <button class="tab-btn" data-tab="tips">Поради експертів</button>
+        <button class="tab-btn" data-tab="progress">Відстеження прогресу</button>
+      </div>
+
+      <div class="tab-content active" id="nutritionTab">
+        <h3 class="tab-title">План харчування по періодах</h3>
+        <div class="nutrition-periods">
+          <div class="nutrition-period">
+            <h4 class="period-title">Базовий період (тижні 1-4)</h4>
+            <div class="nutrition-details">
+              <p>Збалансоване харчування з помірним споживанням вуглеводів. Акцент на білку для м'язового відновлення.</p>
+              <ul>
+                <li>Калорії: 2400-2600 ккал/день</li>
+                <li>Білки: 1.6-1.8 г/кг маси тіла</li>
+                <li>Вуглеводи: 4-5 г/кг маси тіла</li>
+                <li>Жири: 1 г/кг маси тіла</li>
+              </ul>
+            </div>
+          </div>
+          <div class="nutrition-period">
+            <h4 class="period-title">Будівельний період (тижні 5-8)</h4>
+            <div class="nutrition-details">
+              <p>Збільшення споживання вуглеводів для підтримки зростаючого обсягу тренувань.</p>
+              <ul>
+                <li>Калорії: 2600-2800 ккал/день</li>
+                <li>Білки: 1.8-2.0 г/кг маси тіла</li>
+                <li>Вуглеводи: 5-6 г/кг маси тіла</li>
+                <li>Жири: 1 г/кг маси тіла</li>
+              </ul>
+            </div>
+          </div>
+          <div class="nutrition-period">
+            <h4 class="period-title">Інтенсивний період (тижні 9-10)</h4>
+            <div class="nutrition-details">
+              <p>Максимальне споживання вуглеводів для підтримки високоінтенсивних тренувань.</p>
+              <ul>
+                <li>Калорії: 2800-3000 ккал/день</li>
+                <li>Білки: 2.0 г/кг маси тіла</li>
+                <li>Вуглеводи: 6-7 г/кг маси тіла</li>
+                <li>Жири: 0.8-1 г/кг маси тіла</li>
+              </ul>
+            </div>
+          </div>
+          <div class="nutrition-period">
+            <h4 class="period-title">Підводка (тижні 11-12)</h4>
+            <div class="nutrition-details">
+              <p>Зниження загального калоражу при збереженні високого споживання вуглеводів.</p>
+              <ul>
+                <li>Калорії: 2500-2700 ккал/день</li>
+                <li>Білки: 1.8 г/кг маси тіла</li>
+                <li>Вуглеводи: 6-7 г/кг маси тіла (вуглеводне завантаження за 3 дні до старту)</li>
+                <li>Жири: 0.8 г/кг маси тіла</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="calendarTab">
+        <h3 class="tab-title">Інтеграція з календарем</h3>
+        <p class="tab-description">Додайте тренувальний план до свого календаря для отримання нагадувань та кращого планування.</p>
+        <div class="calendar-options">
+          <a href="#" class="calendar-btn" id="googleCalendarBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19.5 3H4.5C3.12 3 2.01 4.12 2.01 5.5L2 18.5C2 19.88 3.12 21 4.5 21H19.5C20.88 21 22 19.88 22 18.5V5.5C22 4.12 20.88 3 19.5 3ZM19.5 18.5H4.5V8H19.5V18.5ZM7 10.5H12.5V16H7V10.5Z" fill="currentColor"/>
+            </svg>
+            Google Calendar
+          </a>
+          <a href="#" class="calendar-btn" id="appleCalendarBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19.5 3H4.5C3.12 3 2.01 4.12 2.01 5.5L2 18.5C2 19.88 3.12 21 4.5 21H19.5C20.88 21 22 19.88 22 18.5V5.5C22 4.12 20.88 3 19.5 3ZM19.5 18.5H4.5V9H19.5V18.5ZM19.5 7.5H4.5V5.5H19.5V7.5ZM7 11H17V12.5H7V11ZM7 14H14V15.5H7V14Z" fill="currentColor"/>
+            </svg>
+            Apple Calendar
+          </a>
+          <a href="#" class="calendar-btn" id="outlookCalendarBtn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M19.5 3H4.5C3.12 3 2.01 4.12 2.01 5.5L2 18.5C2 19.88 3.12 21 4.5 21H19.5C20.88 21 22 19.88 22 18.5V5.5C22 4.12 20.88 3 19.5 3ZM14 18.5H4.5V13H14V18.5ZM19.5 18.5H15.5V13H19.5V18.5ZM19.5 11.5H4.5V5.5H19.5V11.5Z" fill="currentColor"/>
+            </svg>
+            Outlook
+          </a>
+        </div>
+        <div class="calendar-export">
+          <button class="export-btn pulse" id="exportCalendarBtn">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 2.5V12.5M10 12.5L6.25 8.75M10 12.5L13.75 8.75M2.5 14.375V15.625C2.5 16.6605 3.33947 17.5 4.375 17.5H15.625C16.6605 17.5 17.5 16.6605 17.5 15.625V14.375" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Експортувати весь календар (.ics)
+          </button>
+        </div>
+      </div>
+
+      <div class="tab-content" id="tipsTab">
+        <h3 class="tab-title">Поради експертів</h3>
+        <div class="tips-container">
+          <div class="tip-card">
+            <div class="tip-header">
+              <div class="tip-avatar">
+                <img src="https://i.pravatar.cc/100?img=1" alt="Тренер">
+              </div>
+              <div class="tip-author">
+                <div class="author-name">Олена Петренко</div>
+                <div class="author-title">Головний тренер, IAAF рівень 2</div>
+              </div>
+            </div>
+            <div class="tip-content">
+              <p>Не нехтуйте відновлювальними пробіжками. Вони допомагають виводити молочну кислоту та прискорюють відновлення після інтенсивних тренувань. Тримайте темп повільним (зона 2) і насолоджуйтесь процесом.</p>
+            </div>
+          </div>
+          <div class="tip-card">
+            <div class="tip-header">
+              <div class="tip-avatar">
+                <img src="https://i.pravatar.cc/100?img=3" alt="Тренер">
+              </div>
+              <div class="tip-author">
+                <div class="author-name">Максим Іванов</div>
+                <div class="author-title">Експерт з силового тренування</div>
+              </div>
+            </div>
+            <div class="tip-content">
+              <p>Інтегруйте силові тренування в план бігу поступово. Зосередьтеся на базових вправах для нижньої частини тіла з помірним навантаженням, щоб уникнути перетренованості. Ключові вправи: присідання, випади, підйоми на носки та планка.</p>
+            </div>
+          </div>
+          <div class="tip-card">
+            <div class="tip-header">
+              <div class="tip-avatar">
+                <img src="https://i.pravatar.cc/100?img=5" alt="Тренер">
+              </div>
+              <div class="tip-author">
+                <div class="author-name">Анна Коваленко</div>
+                <div class="author-title">Спортивний дієтолог</div>
+              </div>
+            </div>
+            <div class="tip-content">
+              <p>Вживайте вуглеводи протягом 30 хвилин після тривалих пробіжок (понад 90 хвилин) для оптимального відновлення глікогену. Співвідношення вуглеводів до білків 3:1 є ідеальним для відновлювального прийому їжі.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-content" id="progressTab">
+        <h3 class="tab-title">Відстеження прогресу</h3>
+        <div class="progress-charts">
+          <div class="chart-container">
+            <h4 class="chart-title">Прогноз дистанції за тижнями</h4>
+            <div class="chart-placeholder">
+              <canvas id="distanceChart"></canvas>
+            </div>
+          </div>
+          <div class="chart-container">
+            <h4 class="chart-title">Розподіл типів тренувань</h4>
+            <div class="chart-placeholder">
+              <canvas id="trainingTypeChart"></canvas>
+            </div>
+          </div>
+        </div>
+        <div class="tracking-tools">
+          <div class="tool-card">
+            <div class="tool-icon">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="20" cy="20" r="16" stroke="currentColor" stroke-width="2"/>
+                <path d="M20 10V20L26 26" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="tool-details">
+              <h4 class="tool-title">Час тренувань</h4>
+              <p class="tool-description">Відстежуйте загальний час тренувань та порівнюйте з плановими показниками.</p>
+            </div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-icon">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M34 14L20 28L6 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="tool-details">
+              <h4 class="tool-title">Темп бігу</h4>
+              <p class="tool-description">Аналізуйте динаміку темпу на різних тренуваннях та відстанях.</p>
+            </div>
+          </div>
+          <div class="tool-card">
+            <div class="tool-icon">
+              <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 20H30" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 12H20" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 28H25" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="tool-details">
+              <h4 class="tool-title">Планувальник навантажень</h4>
+              <p class="tool-description">Оптимізуйте розподіл навантажень для уникнення перетренованості.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="js/training-data.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>
